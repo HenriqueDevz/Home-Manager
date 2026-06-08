@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang = "pt-BR">
+<head>
+    <meta charset = "UTF-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+    <title>Home Manager</title>
+    <link rel = "stylesheet" href = "/style.css">
+</head>
+<body>
+
+    <header class = "app-header">
+        <span class = "header-title"> 🏠 Home Manager</span>
+        <div class = "header-right">
+            <span class = "header-user" id="header-user"></span>
+            <button class = "btn-logout" onclick = "logout()">Sair</button>
+        </div>
+    </header>
+
+    <main class = "page-content">
+        <section id = "tab-resumo" class = "tab-content active">
+            <h2 class = "section-title">Resumo</h2>
+            <div class = "cards-grid">
+
+                <div class = "metric-card full-width">
+                    <span class = "metric-label">Saldo Disponível</span>
+                        <span class = "metric-value" id="resumo-saldo">R$ 0,00</span>
+                </div>
+                
+                <div class = "metric-card">
+                    <span class = "metric-label">💚 Ganhos</span>
+                    <span class = "metric-value green" id="resumo-ganhos">R$ 0,00</span>
+                </div>
+
+                <div class ="metric-card">
+                    <span class="metric-label">❤️ Gastos</span>
+                    <span class="metric-value red" id="resumo-gastos">R$ 0,00</span>
+                </div>
+
+            </div>
+
+            <h2 class="section-title" style="margin-top: 1.5rem;"> Lista de compras</h2>
+
+            <div class="cards-grid">
+
+                <div class="metric-card">
+                    <span class="metric-label">⚠️ Faltando</span>
+                    <span class="metric-value red" id="resumo-faltando">0</span>
+                </div>
+
+                <div class="metric-card">
+                    <span class="metric-label">✅ OK</span>
+                    <span class="metric-value green" id="resumo-ok">0</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="tab-financas" class="tab-content">
+            <h2 class="section-title">Finanças</h2>
+            <div class="form-section">
+
+                <div class="field">
+                    <label>Descrição</label>
+                    <input type="text" id="fin-nome" placeholder="Ex: Salário, Mercado...">
+                </div>
+
+                <div class="field">
+                    <label>Valor (R$)</label>
+                    <input type="number" id="fin-valor" placeholder="0,00" step="0.01" min="0">
+                </div>
+
+                <div class="form-row">
+                    <div class="field">
+                        <label>Categoria</label>
+                        <select id="fin-categoria">
+                            <option>Salário</option>
+                            <option>Freelance</option>
+                            <option>Alimentação</option>
+                            <option>Transporte</option>
+                            <option>Lazer</option>
+                            <option>Contas</option>
+                            <option>Outros</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                    <label>Tipo</label>
+                    <select id="fin-tipo">
+                        <option value="income">💚 Ganho</option>
+                        <option value="expense">❤️ Gasto</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn-primary" onclick="adicionarFinanca()">Adicionar</button>
+            <div class="erro" id="fin-erro"></div>
+        </div>
+
+        <div class="lista" id="fin-lista"></div>
+        </section>
+
+        <section id="tab-compras" class="tab-content">
+            <h2 class="section-title">
+               🛒  Compras - <span id="compras-mes"></span>
+            </h2>
+            <div class="form-section">
+                <div class="form-row">
+                    <div class="field">
+                        <label>Produto</label>
+                        <select id="comp-item">
+                        </select>
+                    </div>
+
+                    <div class="field">
+                    <label>Qtd. base</label>
+                    <input type="number" id="comp-qty" value="1" min="1" max="99">
+                    </div>
+                </div>
+
+                <button class="btn-primary" onclick="adicionarItemBase()">Adicionar à lista</button>
+                <div class="erro" id="comp-erro"></div>
+            </div>
+
+            <div class="lista" id="comp-lista">
+            </div>
+        </section>
+    </main>
+
+    <nav class="bottom-nav">
+        <button class="nav-btn active" id="nav-resumo" onclick="mudarAba('resumo')">
+            <span>📊</span>Resumo
+        </button>
+        <button class="nav-btn" id="nav-financas" onclick="mudarAba('financas')">
+            <span>💰</span>Finanças
+        </button>
+        <button class="nav-btn" id="nav-compras" onclick="mudarAba('compras')">
+            <span>🛒</span>Compras
+        </button>
+    </nav>
+
+    <script src="/dashboard.js"></script>
+</body>
+</html>

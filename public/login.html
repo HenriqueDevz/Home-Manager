@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Manager - Login</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class ="centered">
+    <div class ="card">
+        <h1 id = "titulo">🏠 Bem-vindo</h1>
+        <p id = "subtitulo">Acesse sua conta para continuar</p>
+
+        <div class="field">
+            <label>Usuário </label>
+            <input type="text" id="username" placeholder="Usuário" autocomplete="off">
+        </div>
+        <div class="field">
+            <label>Senha </label>
+            <input type="password" id="password" placeholder="••••••••" autocomplete="new-password">
+    </div>
+
+        <button class ="btn-primary" id="btn-entrar" onclick="submitForm()">Entrar</button>
+        <button class ="btn-secondary" id="btn-alternar" onclick="alternarModo()">Não tem conta? Cadastre-se</button>
+        
+        <div class="erro" id="erro"></div>
+    </div>
+
+    <script src="/login.js"></script>
+</body>
+</html>
