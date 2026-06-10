@@ -175,10 +175,20 @@ function renderCompras(items) {
         <span>${item.qty_comprada}</span>
         <button class="btn-icon" onclick="alterarQty('${item.product_id}', ${item.qty_comprada}, +1)">+</button>
       </div>
-
+      <button class="btn-icon" onclick="mostrarEdicao(${item.id}, ${item.base_qty})" title="Editar quantidade base">✏️</button>
       <button class="btn-delete" onclick="deletarItemBase(${item.id})">🗑</button>
 
     </div>
+
+    <div class="edit-form" id="edit-form-${item.id}" style="display:none">
+        <input type="number" id="edit-qty-${item.id}" value="${item.base_qty}" min="1" max="99"
+               style="width:80px;margin-right:8px">
+        <button class="btn-primary" style="width:auto;padding:6px 12px"
+                onclick="salvarEdicao(${item.id})">Salvar</button>
+        <button class="btn-secondary" style="width:auto;padding:6px 12px;margin-top:0"
+                onclick="cancelarEdicao(${item.id})">Cancelar</button>
+    </div>
+
   `).join('');
 }
 
@@ -244,4 +254,89 @@ async function logout() {
     await fetch('/auth/logout', {method: 'POST' });
     localStorage.removeItem('username');
     window.location.href = '/';
+}
+
+async function zerarMes() {
+    if (!confirm('Zerar todas as compras do mês? Os itens da lista base permanecem.'))
+        return;
+
+    try {
+        const res = await fetch('/api/shopping/monthly', { method: 'DELETE' });
+        const data = await res.json();
+
+        carregarCompras();
+
+    }catch (err) {
+        console.error('Erro ao zerar mês:', err);
+    }
+}
+
+function mostrarEdicao (id, qtdAtual) {
+    document.getElementById(`edit-form-${id}`).style.display = 'flex';
+    document.getElementById(`edit-form-${id}`).style.gap = '8px';
+    document.getElementById(`edit-form-${id}`).style.alignItems = 'center';
+    document.getElementById(`edit-form-${id}`).style.padding = '8px 1rem';
+    document.getElementById(`edit-qty-${id}`).focus();
+
+}
+
+function cancelarEdicao(id) {
+    document.getElementById(`edit-form-${id}`).style.display = 'none';
+}
+
+async function salvarEdicao(id) {
+    const novaQty = document.getElementById(`edit-qty-${id}`).value;
+
+    try {
+        const res = await fetch(`/api/shopping/base/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ base_qty: novaQty})
+        });
+        
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.error);
+            return;
+        }
+
+        carregarCompras();
+    } catch (err) {
+        alert('Erro de conexão');
+    }
+}
+
+let todosItensCompras = [];
+
+async function carregarCompras() {
+    try {
+        const res = await fetch('/api/shopping');
+        const data = await res.json();
+
+        todosItensCompras = data.items;
+        popularFiltro(data.items);
+        renderCompras(data.items);
+        atualizarResumoCompras(data.items);
+
+    } catch(err) {
+        console.error('Erro ao carregar compras:', err);
+    }
+}
+
+function popularFiltro(items) {
+    const select = document.getElementById('comp-filtro');
+    const categorias = [...new Set(items.map(i => i.category))].sort();
+
+    select.innerHTML = `<option value="">Todas as categorias</option>`+
+    categorias.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+function filtrarCategoria () {
+    const  categoria = document.getElementById('comp-filtro').value;
+    const itensFiltrados = categoria
+        ? todosItensCompras.filter(i => i.category === categoria)
+        :todosItensCompras;
+
+        renderCompras(itensFiltrados);
 }

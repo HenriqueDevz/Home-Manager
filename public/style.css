@@ -404,3 +404,8 @@ body {
 .tab-content.active {
     display: block;
 }
+
+#btn-zerar {
+    margin-bottom: 1rem;
+    width: 100%;
+}

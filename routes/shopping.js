@@ -116,4 +116,37 @@ router.delete("/base/:id", (req, res) => {
     res.json({ message: "Item removido" });
 });
 
-module.exports = router;
+router.delete("/monthly", (req, res) => {
+    const userId = req.user.id;
+    
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
+
+    const result = db
+    .prepare("DELETE FROM shopping_monthly WHERE user_id = ? AND month = ? AND year = ?")
+    .run(userId, month, year);
+    
+    res.json({ message: `${result.changes} itens zerados`, changes: result.changes });
+});
+
+router.put("/base/:id", (req, res) => {
+    const userId = req.user.id;
+    const { id } = req.params;
+    const { base_qty } = req.body;
+
+    if(!base_qty || Number(base_qty)< 1) {
+        return res.status(400).json({ error: "Quantidade inválida" });
+    }
+    
+    const result = db
+    .prepare("UPDATE shopping_base SET base_qty = ? WHERE id = ? AND user_id = ?")
+    .run(Number(base_qty), id, userId);
+
+    if (result.changes === 0) {
+        return res.status(404).json({ error: "Item não encontrado" });     
+    }
+
+    res.json({ message: "Quantidade atualizada" });
+});
+module.exports = router; 

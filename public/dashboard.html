@@ -102,6 +102,9 @@
             <h2 class="section-title">
                🛒  Compras - <span id="compras-mes"></span>
             </h2>
+            <button class="btn-secondary" id="btn-zerar" onclick="zerarMes()">
+               🔄 Zerar mês 
+            </button>
             <div class="form-section">
                 <div class="form-row">
                     <div class="field">
@@ -119,6 +122,13 @@
                 <button class="btn-primary" onclick="adicionarItemBase()">Adicionar à lista</button>
                 <div class="erro" id="comp-erro"></div>
             </div>
+
+            <div class="field" style="margin-bottom: 0.75rem">
+            <label>Filtrar por categoria</label>
+            <select id="comp-filtro" onchange="filtrarCategoria()">
+                <option value="">Todas as categorias</option>
+            </select>
+        </div>
 
             <div class="lista" id="comp-lista">
             </div>
