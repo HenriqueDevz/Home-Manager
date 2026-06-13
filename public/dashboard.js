@@ -3,6 +3,7 @@ const MESES =['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
 ];
 
 document.addEventListener('DOMContentLoaded', () => {
+    restaurarTema();
     const username = localStorage.getItem('username' || '');
     document.getElementById('header-user').textContent = username;
 
@@ -339,4 +340,22 @@ function filtrarCategoria () {
         :todosItensCompras;
 
         renderCompras(itensFiltrados);
+}
+
+function toggleTema () {
+    const body = document.body;
+    const btn = document.getElementById('btn-tema');
+    const isLight = body.classList.toggle('light-mode');
+
+    btn.textContent = isLight ? '☀️' : '🌙';
+
+    localStorage.setItem('tema', isLight ? 'light' : 'dark');
+}
+
+function restaurarTema() {
+    const temaSalvo = localStorage.getItem('tema');
+    if(temaSalvo === 'light') {
+        document.body.classList.add('light-mode');
+        document.getElementById('btn-tema').textContent = '☀️';
+    }
 }

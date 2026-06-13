@@ -7,8 +7,8 @@
 
 body {
     font-family: system-ui, sans-serif;
-    background: #0f0f13;
-    color: #f1f5f9;
+    background: var(--bg-primary);
+    color: var(--text-primary);
     min-height: 100vh;
 }
 
@@ -23,8 +23,8 @@ body {
 
 /* Card — rounded dark container */
 .card {
-    background: #1a1a24;
-    border: 1px solid #2a2a3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 16px;
     padding: 2rem;
     width: 100%;
@@ -39,7 +39,7 @@ body {
 
 .card p {
     font-size: 0.875rem;
-    color: #94a3b8;
+    color: var(--text-muted);
     margin-bottom: 1.75rem;
 }
 
@@ -54,7 +54,7 @@ body {
 .field label {
     font-size: 0.8rem;
     font-weight: 500;
-    color: #94a3b8;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -62,12 +62,12 @@ body {
 /* Large input for easier use on mobile */
 .field input,
 .field select {
-    background: #0f0f13;
-    border: 1px solid #2a2a3a;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 0.75rem 1rem;
     font-size: 1rem;
-    color: #f1f5f9;
+    color: var(--text-primary);
     outline: none;
     transition: border-color 0.2s;
     width: 100%;
@@ -100,8 +100,8 @@ body {
 .btn-secondary {
     width: 100%;
     background: transparent;
-    color: #94a3b8;
-    border: 1px solid #2a2a3a;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
     padding: 0.75rem;
     font-size: 0.875rem;
@@ -111,7 +111,7 @@ body {
 }
 
 .btn-secondary:hover {
-    color: #f1f5f9;
+    color: var(--text-primary);
     border-color: #6366f1;
 }
 
@@ -135,7 +135,7 @@ body {
     left: 0;
     right: 0;
     height: 56;
-    background: #1a1a24;
+    background: var(--bg-secondary);
     border-bottom: 1px solid #2a2a3a;
     display: flex;
     align-items: center;
@@ -157,13 +157,13 @@ body {
 
 .header-user {
     font-size: 0.8rem;
-    color: #94a3b8;
+    color: var(--text-muted);
 }
 
 .btn-logout {
     background: transparent;
-    color: #94a3b8;
-    border: 1px solid #2a2a3a;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 4px 10px;
     font-size: 0.8rem;
@@ -187,7 +187,7 @@ body {
 .section-title {
     font-size: 1rem;
     font-weight: 600;
-    color: #94a3b8;
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 0.75rem;
@@ -203,8 +203,8 @@ body {
 
 /* Metric card (balance, income, etc.) */
 .metric-card {
-    background: #1a1a24;
-    border: 1px solid #2a2a3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1rem;
     display: flex;
@@ -219,7 +219,7 @@ body {
 
 .metric-label {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: var(--text-muted);
     font-weight: 500;
 }
 
@@ -233,8 +233,8 @@ body {
 
 /* Add form */
 .form-section {
-    background: #1a1a24;
-    border: 1px solid #2a2a3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1rem;
     margin-bottom: 1rem;
@@ -254,8 +254,8 @@ body {
 }
 
 .lista-item {
-    background: #1a1a24;
-    border: 1px solid #2a2a3a;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 0.75rem 1rem;
     display: flex;
@@ -278,7 +278,7 @@ body {
 
 .item-detalhe {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: var(--text-muted);
 }
 
 /* Financial transaction value */
@@ -321,9 +321,9 @@ body {
 }
 
 .btn-icon {
-    background: #0f0f13;
-    color: #f1f5f9;
-    border: 1px solid #2a2a3a;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
     border-radius: 6px;
     width: 28px;
     height: 28px;
@@ -341,7 +341,7 @@ body {
 
 .btn-delete {
     background: transparent;
-    color: #475569;
+    color: var(--text-hint);
     border: none;
     font-size: 1rem;
     cursor: pointer;
@@ -361,7 +361,7 @@ body {
     left: 0;
     right: 0;
     height: 64px;
-    background: #1a1a24;
+    background: var(--bg-secondary);
     border-top: 1px solid #2a2a3a;
     display: flex;
     z-index: 100;
@@ -370,7 +370,7 @@ body {
 .nav-btn {
     flex: 1;
     background: transparent;
-    color: #475569;
+    color: var(--text-hint);
     border: none;
     cursor: pointer;
     display: flex;
@@ -394,7 +394,7 @@ body {
 }
 
 .nav-btn:hover {
-    color: #f1f5f9;
+    color: var(--text-primary);
 }
 
 .tab-content {
@@ -408,4 +408,67 @@ body {
 #btn-zerar {
     margin-bottom: 1rem;
     width: 100%;
+}
+
+.section-banner {
+    border-radius: 16px;
+    margin-bottom: 1.25rem;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.banner-resumo { background: linear-gradient(135deg, #1e1b4b 100%); }
+.banner-financas { background: linear-gradient(135deg, #052e16 100%); }
+.banner-compras { background: linear-gradient(135deg, #7c2d12 0%, #1a1a24 100%); }
+
+.banner-texto h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.banner-texto p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+:root {
+    --bg-primary: #0f0f13;
+    --bg-secondary: #1a1a24;
+    --bg-tertiary: #0f0f13;
+    --border-color: #2a2a3a;
+    --text-primary: #f1f5f9;
+    --text-muted: #94a3b8;
+    --text-hint: #475569;
+}
+
+body.light-mode {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f1f5f9;
+    --border-color: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-muted: #64748b;
+    --text-hint: #94a3b8;
+}
+
+@keyframes fadeSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeSlideIn 0.25s ease forwards;
 }
