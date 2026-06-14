@@ -134,7 +134,7 @@ body {
     top: 0;
     left: 0;
     right: 0;
-    height: 56;
+    height: 56px;
     background: var(--bg-secondary);
     border-bottom: 1px solid #2a2a3a;
     display: flex;
@@ -194,7 +194,7 @@ body {
 }
 
 /* 2-column grid for the cards  */
-.card-grid {
+.cards-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
@@ -228,8 +228,8 @@ body {
     font-weight: 700;   
 }
 
-.metric-value-green {color: #4ade80;}
-.metric-value-red {color: #f87171;}
+.metric-value.green {color: #4ade80;}
+.metric-value.red {color: #f87171;}
 
 /* Add form */
 .form-section {
@@ -421,8 +421,8 @@ body {
     gap: 1rem;
 }
 
-.banner-resumo { background: linear-gradient(135deg, #1e1b4b 100%); }
-.banner-financas { background: linear-gradient(135deg, #052e16 100%); }
+.banner-resumo { background: linear-gradient(135deg, #1e1b4b 0%, #1a1a1a 100%); }
+.banner-financas { background: linear-gradient(135deg, #052e16 0%, #1a1a1a 100%); }
 .banner-compras { background: linear-gradient(135deg, #7c2d12 0%, #1a1a24 100%); }
 
 .banner-texto h3 {
@@ -471,4 +471,34 @@ body.light-mode {
 .tab-content.active {
     display: block;
     animation: fadeSlideIn 0.25s ease forwards;
+}
+
+.chart-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.chart-titulo {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+}
+
+.chart-wrapper {
+    max-width: 220px;
+    margin: 0 auto;
+}
+
+.chart-vazio {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 0.5rem;
+    display: none;
 }

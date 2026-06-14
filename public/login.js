@@ -53,7 +53,7 @@ async function submitForm() {
             erroDiv.textContent = "Conta criada ! Faça login.";
         }
     } catch (error) {
-        console.log("Erro no catch:", err);
+        console.log("Erro no catch:", error);
         erroDiv.textContent = "Erro de conexão. Tente novamente.";
     }
 }

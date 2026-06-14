@@ -4,7 +4,9 @@ const MESES =['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
 
 document.addEventListener('DOMContentLoaded', () => {
     restaurarTema();
-    const username = localStorage.getItem('username' || '');
+    definirPeriodoAtual();
+    definirDataHoje();
+    const username = localStorage.getItem('username') || '';
     document.getElementById('header-user').textContent = username;
 
     const agora = new Date();
@@ -28,8 +30,15 @@ function mudarAba(aba) {
 }
 
 async function carregarFinancas () {
+    const mesEl = document.getElementById('fin-mes');
+    const anoEl = document.getElementById('fin-ano');
+
+    const now = new Date();
+    const month = mesEl ? mesEl.value : now.getMonth() + 1;
+    const year = anoEl ? anoEl.value : now.getFullYear();
+
     try {
-        const res = await fetch('/api/finances');
+        const res = await fetch(`/api/finances?month=${month}&year=${year}`);
         const data = await res.json();
 
         renderFinancas(data);
@@ -68,6 +77,8 @@ function renderFinancas(data) {
   `).join('');
 }
 
+let graficoPizza = null;
+
 function atualizarResumoFinancas(data) {
     const saldoEl = document.getElementById('resumo-saldo');
 
@@ -76,6 +87,66 @@ function atualizarResumoFinancas(data) {
     
     saldoEl.textContent = `R$ ${Math.abs(data.saldo).toFixed(2)}`;
     saldoEl.className = `metric-value ${data.saldo >= 0? 'green': 'red'}`;
+    atualizarGrafico(data.gastos);
+}
+
+function atualizarGrafico(gastos) {
+    const canvas = document.getElementById('grafico-gastos');
+    const vazioEl = document.getElementById('chart-vazio');
+
+    if (gastos.length === 0) {
+        canvas.style.display = 'none';
+        vazioEl.style.display = 'block';
+        return;
+    }
+
+    canvas.style.display = 'block';
+    vazioEl.style.display = 'none';
+
+    const porCategoria = gastos.reduce((acc, gasto) => {
+        acc[gasto.category] = (acc[gasto.category] || 0) + gasto.value;
+        return acc;
+    }, {});
+
+    const labels = Object.keys(porCategoria);
+    const values = Object.values(porCategoria);
+
+    const cores = ['#6366f1','#4ade80','#f87171','#fb923c','#facc15','#38bdf8','#a78bfa','#f472b6'];
+
+    if (graficoPizza) {
+        graficoPizza.destroy();
+    }
+    
+    graficoPizza = new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+            labels,
+            datasets: [{
+                data: values,
+                backgroundColor: cores.slice(0, labels.length),
+                borderWidth: 2,
+                borderColor: '#1a1a24'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        color: '#94a3b8',
+                        padding: 12,
+                        font: { size: 11 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: (ctx) => `R$ ${ctx.parsed.toFixed(2)}`
+                    }
+                }
+            }
+        }
+    });
 }
 
 async function adicionarFinanca() {
@@ -83,9 +154,12 @@ async function adicionarFinanca() {
     const valor = document.getElementById('fin-valor').value;
     const categoria = document.getElementById('fin-categoria').value;
     const tipo = document.getElementById('fin-tipo').value;
+    const dataForm = document.getElementById('fin-data').value;
     const erroDiv = document.getElementById('fin-erro');
 
-    console.log({name: nome, value: valor, category: categoria, type: tipo});
+    const  month = document.getElementById('fin-mes').value;
+    const year = document.getElementById('fin-ano').value;
+
 
     if (!nome || !valor) {
         erroDiv.textContent = 'Preencha descrição e valor';
@@ -96,23 +170,25 @@ async function adicionarFinanca() {
         const res = await fetch('/api/finances', {
             method: 'POST',
             headers: {'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: nome, value: valor, category: categoria, type: tipo })
+            body: JSON.stringify({ name: nome, value: valor, category: categoria, type: tipo, date: dataForm })
         });
         
-        const data = await res.json();
+        const resData = await res.json();
 
         if (!res.ok) {
-            erroDiv.textContent = data.error;
+            erroDiv.textContent = resData.error;
             return;
         }
 
         document.getElementById('fin-nome').value ='';
         document.getElementById('fin-valor').value ='';
+        document.getElementById('fin-data').value ='';
         erroDiv.textContent = '';
 
         carregarFinancas();
 
-    }catch (err) {
+    } catch (err) {
+        console.log('Erro ao adicionar finança', err);
         erroDiv.textContent = 'Erro de conexão';
     }
 }
@@ -134,18 +210,6 @@ async function carregarCatalogo() {
 
     }catch (err) {
         console.error('Erro ao carregar catálogo', err);
-    }
-}
-
-async function carregarCompras() {
-    try {
-        const res = await fetch('/api/shopping');
-        const data = await res.json();
-
-        renderCompras(data.items);
-        atualizarResumoCompras(data.items);
-    }catch (err) {
-        console.error('Erro ao carregar compras', err);
     }
 }
 
@@ -357,5 +421,22 @@ function restaurarTema() {
     if(temaSalvo === 'light') {
         document.body.classList.add('light-mode');
         document.getElementById('btn-tema').textContent = '☀️';
+    }
+}
+
+function definirPeriodoAtual() {
+    const now = new Date();
+
+    const mesEl = document.getElementById('fin-mes');
+    const anoEl = document.getElementById('fin-ano');
+
+    if (mesEl) mesEl.value = String(now.getMonth() + 1);
+    if (anoEl) anoEl.value = String(now.getFullYear());
+}
+
+function definirDataHoje() {
+    const input = document.getElementById('fin-data');
+    if(input) {
+        input.value = new Date().toISOString().split('T')[0];
     }
 }
