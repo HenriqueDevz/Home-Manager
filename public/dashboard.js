@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('compras-mes').textContent=
     `${MESES[agora.getMonth()]} ${agora.getFullYear()}`;
     carregarFinancas();
+    carregarComparativo();
     carregarCatalogo();
     carregarCompras();
 });
@@ -438,5 +439,64 @@ function definirDataHoje() {
     const input = document.getElementById('fin-data');
     if(input) {
         input.value = new Date().toISOString().split('T')[0];
+    }
+}
+
+async function carregarComparativo() {
+    try {
+        const res = await fetch('/api/finances/comparativo');
+        const data = await res.json();
+
+        const el = document.getElementById('comparativo');
+
+        function badge(valor, inverso=false) {
+            if (valor === 0) return `<span class="variacao neutro">= R$ 0,00</span>`;
+
+            const positivo = inverso ? valor < 0 : valor > 0;
+            const classe = positivo ? 'positivo' : 'negativo';
+            const sinal = positivo ? '+' : '−';
+            return `<span class="variacao ${classe}">${sinal} R$ ${Math.abs(valor).toFixed(2)}</span>`;
+        }
+
+        el.innerHTML = `
+        <div class="comparativo-header">
+            <span>Indicador</span>
+            <div style="display:flex;gap:1rem">
+                <span style="min-width:80px;text-align:right">${data.periodos.anterior}</span>
+                    <span style="min-width:80px;text-align:right">${data.periodos.atual}</span>
+                    <span style="min-width:80px;text-align:right">Variação</span>
+                </div>
+            </div>
+
+            <div class="comparativo-row">
+                <span class="comparativo-label">💚 Ganhos</span>
+                <div class="comparativo-valores">
+                    <span class="comparativo-valor">R$ ${data.anterior.ganhos.toFixed(2)}</span>
+                    <span class="comparativo-valor">R$ ${data.atual.ganhos.toFixed(2)}</span>
+                    ${badge(data.variacao.ganhos)}
+                </div>
+            </div>
+
+            <div class="comparativo-row">
+                <span class="comparativo-label">❤️ Gastos</span>
+                <div class="comparativo-valores">
+                    <span class="comparativo-valor">R$ ${data.anterior.gastos.toFixed(2)}</span>
+                    <span class="comparativo-valor">R$ ${data.atual.gastos.toFixed(2)}</span>
+                    ${badge(data.variacao.gastos, true)}
+                </div>
+            </div>
+
+            <div class="comparativo-row">
+                <span class="comparativo-label">💰 Saldo</span>
+                <div class="comparativo-valores">
+                    <span class="comparativo-valor">R$ ${data.anterior.saldo.toFixed(2)}</span>
+                    <span class="comparativo-valor">R$ ${data.atual.saldo.toFixed(2)}</span>
+                    ${badge(data.variacao.saldo)}
+                </div>
+            </div>
+        `;
+
+    } catch (err) {
+        console.error('Erro ao carregar comparativo:', err);
     }
 }

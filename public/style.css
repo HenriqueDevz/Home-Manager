@@ -502,3 +502,58 @@ body.light-mode {
     margin-top: 0.5rem;
     display: none;
 }
+
+.comparativo-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    magin-bottom: 1rem;
+}
+
+.comparativo-header {
+    display : flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 0.75rem;
+    font-weight: 500;
+}
+
+.comparativo-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+
+.comparativo-label {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.comparativo-valores {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.comparativo-valor {
+    font-size: 0.85rem;
+    font-weight: 500;
+    min-width: 80px;
+    text-align: right;
+}
+
+.variacao {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.variacao.positivo { background: #052e16; color: #4ade80; }
+.variacao.negativo { background: #450a0a; color: #f87171; }
+.variacao.neutro  { background: #1c1917; color: #94a3b8; }
