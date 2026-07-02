@@ -16,8 +16,8 @@ router.get("/", async (req, res ) => {
     const now = new Date();
     const month = now.getMonth() + 1;
     const year = now.getFullYear();
-
-    const result = await db.execute({
+    try {
+        const result = await db.execute({
         sql:`
         SELECT 
         sb.id                      AS id,
@@ -54,6 +54,10 @@ router.get("/", async (req, res ) => {
     items.sort((a, b) => ordem[a.status] - ordem[b.status]);
 
     res.json({items: items, month, year });
+    } catch (err) {
+        console.error("Erro ao carregar compras:",err);
+        res.status(500).json({ error:"Erro ao carregar compras"});
+    }
 });
 
 
@@ -68,7 +72,7 @@ router.post("/base", async(req, res) => {
         sql:"SELECT id FROM products WHERE id = ?",
         args:[product_id]
     });
-    if(!prodResult.rows.length === 0) {
+    if(prodResult.rows.length === 0) {
         return res.status(404).json({error: "Produto não encontrado" });
     }
     try {
