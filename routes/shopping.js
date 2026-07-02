@@ -81,7 +81,7 @@ router.post("/base", async(req, res) => {
         sql:"INSERT INTO shopping_base (user_id, product_id,  base_qty) VALUES (?, ?, ?)",
         args:[userId, product_id, Number (base_qty)]
     });
-        res.status(201).json({ id: result.lastInsertRowid, message: "Item Adicionado" });
+        res.status(201).json({ id: Number (result.lastInsertRowid), message: "Item Adicionado" });
     } catch (err) {
         res.status(409).json({ error: "Item já esta na lista base" });
     }
