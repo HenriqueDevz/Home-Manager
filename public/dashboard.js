@@ -16,18 +16,56 @@ document.addEventListener('DOMContentLoaded', () => {
     carregarComparativo();
     carregarCatalogo();
     carregarCompras();
+
+    mudarAba('resumo');
 });
+const tabBlobs = {
+    resumo: {
+        bg: '#262141',
+        blobs: [
+        {w:380, h:380, bg:'#7f77DD', top:'-80px', left:'auto', right:'-60px' },
+        {w:280, h:280, bg:'#AFA9EC',top:'auto', left:'-69px', bottom: '100px' },
+        {w:200, h:200, bg:'#CECBF6', top:'50%', left:'40%' }
+    ]
+},
+    financas: {
+        bg: '#243a24',
+        blobs: [
+        {w:380, h:380, bg:'#97C459', top:'-80px', right:'-60px' },
+        {w:280, h:280, bg:'#9FE1CB', top:'auto', left:'-60px', bottom:'100px' },
+        {w:200, h:200, bg:'#C0DD97', top:'50px', left:'40%' }
+    ],
+},
+    compras: {
+        bg: '#1e2a3a',
+        blobs: [
+        {w:380, h:380, bg:'#85B7EB', top:'-70px', left:'-60px' },
+        {w:280, h:280, bg:'#B5D4F4', top:'auto', right:'-60px', bottom:'80px' },
+        {w:200, h:200, bg:'#378ADD', top:'45%', right:'35%' }
+    ]
+    }
+};
 
 function mudarAba(aba) {
-    document.querySelectorAll('.tab-content').forEach(tab => {
-        tab.classList.remove('active');
-    });
-    document.querySelectorAll('.nav-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
     document.getElementById(`tab-${aba}`).classList.add('active');
     document.getElementById(`nav-${aba}`).classList.add('active');
+
+    const config = tabBlobs[aba];
+    document.getElementById('page-bg').style.background = config.bg;
+
+    [1, 2, 3].forEach((n, i) => {
+        const b = document.getElementById(`blob${n}`);
+        const cfg = config.blobs[i];
+        b.style.width = cfg.w + 'px';
+        b.style.height = cfg.h + 'px';
+        b.style.background = cfg.bg;
+        b.style.top = cfg.top || 'auto';
+        b.style.left = cfg.left || 'auto';
+        b.style.right = cfg.right || 'auto';
+        b.style.bottom = cfg.bottom || 'auto'
+    });
 }
 
 async function carregarFinancas () {
