@@ -238,19 +238,53 @@ async function deletarFinanca(id) {
     carregarFinancas();
 }
 
+let todosProdutos = [];
 async function carregarCatalogo() {
     try {
         const res = await fetch('/api/shopping/products');
         const data = await res.json();
-
-        document.getElementById('comp-item').innerHTML = data.products
-        .map(p => `<option value ="${p.id}">${p.name} - ${p.category}</option>`)
-        .join('');
-
+        todosProdutos = data.products;
     }catch (err) {
         console.error('Erro ao carregar catálogo', err);
     }
 }
+
+function filtrarProdutos() {
+    const busca = document.getElementById('comp-busca').value.trim().toUpperCase();
+    const lista = document.getElementById('autocomplete-lista');
+    document.getElementById('comp-item').value = '';
+
+    if (busca.length < 1) {
+        lista.classList.remove('aberta');
+        return;
+    }
+    const filtrados = todosProdutos.filter(p => 
+        p.name.includes(busca) || p.category.toUpperCase().includes(busca)
+    );
+
+    if (filtrados.length === 0) {
+        lista.innerHTML = `<div class="autocomplete-item" style="color:var(--text-muted)">Nemhum produto encontrado</div>`;
+    } else {
+        lista.innerHTML = filtrados.map(p => `
+            <div class="autocomplete-item" onclick="selecionarProduto(${p.id}, '${p.name}', '${p.category}')">
+            ${p.name} <span>${p.category}</span>
+            </div>
+        `).join('');
+    }
+    lista.classList.add('aberta');
+}
+
+function selecionarProduto(id, nome, categoria) {
+    document.getElementById('comp-busca').value = `${nome} - ${categoria}`;
+    document.getElementById('comp-item').value = id;
+    document.getElementById('autocomplete-lista').classList.remove('aberta');
+}
+
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.autocomplete-wrapper')) {
+        document.getElementById('autocomplete-lista').classList.remove('aberta');
+    }
+});
 
 function renderCompras(items) {
     const lista = document.getElementById('comp-lista');
@@ -328,6 +362,9 @@ async function adicionarItemBase() {
         }
 
         erroDiv.textContent ='';
+        document.getElementById('comp-busca').value = '';
+        document.getElementById('comp-item').value = '';
+        document.getElementById('comp-qty').value = 1;
         carregarCompras();
 
     }catch (err) {

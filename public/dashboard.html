@@ -6,6 +6,10 @@
     <title>Home Manager</title>
     <link rel = "stylesheet" href = "/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#262141">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Finanças&Compras">
 </head>
 <body>
 <div class="tab-bg" id="page-bg">
@@ -230,16 +234,19 @@
                 <div class="form-row">
                     <div class="field">
                         <label>Produto</label>
-                        <select id="comp-item">
-                        </select>
+                        <div class="autocomplete-wrapper">
+                            <input type="text" id="comp-busca" placeholder="Digite para buscar..." autocomplete="off" oninput="filtrarProdutos()">
+                            <div class="autocomplete-lista" id="autocomplete-lista"></div>
+                            <input type="hidden" id="comp-item">
+                        </div>
                     </div>
 
                     <div class="field">
-                    <label>Qtd. base</label>
-                    <input type="number" id="comp-qty" value="1" min="1" max="99">
+                        <label>Qtd. base</label>
+                        <input type="number" id="comp-qty" value="1" min="1" max="99">
                     </div>
                 </div>
-
+            
                 <button class="btn-primary" onclick="adicionarItemBase()">Adicionar à lista</button>
                 <div class="erro" id="comp-erro"></div>
             </div>
@@ -269,5 +276,12 @@
     </nav>
 
     <script src="/dashboard.js"></script>
+    <script>
+        if('serviceWorker' in navigation) {
+            navigator.serviceWorker.register('/service-worker-js')
+            .then(() => console.log('Service Worker registrado'))
+            .catch(err => console.error('Erro no SW:', err));
+        }
+    </script>
 </body>
 </html>
