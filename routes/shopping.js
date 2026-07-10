@@ -25,7 +25,8 @@ router.get("/", async (req, res ) => {
         p.name                     AS name,
         p.category                 AS category,
         sb.base_qty                AS base_qty,
-        COALESCE(sm.qty, 0)        AS qty_comprada
+        COALESCE(sm.qty, 0)        AS qty_comprada,
+        COALESCE(sm.price, 0)      AS price
         FROM shopping_base sb
         JOIN products p
           ON sb.product_id = p.id
@@ -90,7 +91,7 @@ router.post("/base", async(req, res) => {
 router.put("/monthly/:productId", async (req, res) => {
     const userId = req.user.id;
     const productId = req.params.productId;
-    const { qty } = req.body;
+    const { qty, price } = req.body;
 
     if (qty == undefined || qty === null) {
         return res.status(400).json({ error: "Quantidade obrigatória" });
@@ -99,14 +100,44 @@ router.put("/monthly/:productId", async (req, res) => {
     const month = now.getMonth() + 1;
     const year = now.getFullYear();
 
-  await db.execute({
-    sql:`
-    INSERT OR REPLACE INTO shopping_monthly (user_id, product_id, qty, month, year)
-    VALUES (?, ?, ?, ?, ?)
-   `,
-   args:[userId, productId, Number(qty), month, year]
-  });
-    res.json({ message: "Quantidade atualizada" });
+    try {
+         await db.execute({
+            sql:`
+            INSERT OR REPLACE INTO shopping_monthly (user_id, product_id, qty, price, month, year)
+            VALUES (?, ?, ?, ?, ?, ?)
+            `,
+            args:[userId, productId, Number(qty),Number(price) || 0, month, year]
+        });
+        res.json({ message: "Quantidade atualizada" });
+    } catch (err) {
+        console.error("Error ao atualizar:", err);
+        res.status(500).json({ error: "Erro ao atualizar" });
+    }
+});
+
+router.patch("/monthly/:productId/price", async (req, res) => {
+    const userId = req.user.id;
+    const productId = req.params.productId;
+    const { price } = req.body;
+
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
+
+    try {
+        await db.execute({
+            sql : `
+            UPDATE shopping_monthly
+            SET price = ?
+            WHERE user_id = ? AND product_id = ? AND month = ? AND year = ?
+            `,
+            args: [Number(price) || 0, userId, productId, month, year]
+        });
+        res.json({ message: "Preço atualizado" });
+    } catch(err) {
+        console.error("Erro ao atualizar preço:", err);
+        res.status(500).json({ error: "Erro ao atualizar preço" });
+    }
 });
 
 router.delete("/base/:id", async (req, res) => { 

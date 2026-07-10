@@ -232,6 +232,45 @@ async function adicionarFinanca() {
     }
 }
 
+async function atualizarPreco(input) {
+    const productId = input.dataset.productId;
+    const valor = input.value;
+
+    try {
+        await fetch(`/api/shopping/monthly/${productId}/price`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ price: Number(valor) || 0 })
+        });
+        atualizarTotalCompras();
+    } catch(err) {
+        console.error('Erro ao atualizar preço:', err);
+    }
+}
+
+function atualizarResumoCompras(items) {
+    document.getElementById('resumo-faltando').textContent =
+        items.filter(i => i.status === 'faltando').length;
+    document.getElementById('resumo-ok').textContent = 
+        items.filter( i => i.status === 'ok').length;
+
+    atualizarTotalCompras();
+}
+
+function atualizarTotalCompras() {
+    const inputs = document.querySelectorAll('.price-input');
+    let total = 0;
+    inputs.forEach(input => {
+        const preco = Number(input.value) || 0;
+        const qty = Number(input.closest('.lista-item')
+            ?.querySelector('.qty-controls span')?.textContent) || 0;
+        total += preco * qty;
+    });
+
+    const el = document.getElementById('comp-total');
+    if (el) el.textContent = `R$ ${total.toFixed(2)}`;
+}
+
 async function deletarFinanca(id) {
     if (!confirm('Remover este registro?')) return;
     await fetch(`/api/finances/${id}`, {method: 'DELETE' });
@@ -306,13 +345,21 @@ function renderCompras(items) {
 
       <span class="badge ${item.status}">${traduzirStatus(item.status)}</span>
 
-      <!-- PT: Botões +/- passam a qtd atual para calcular a nova -->
-      <!-- EN: +/- buttons pass the current qty to calculate the new one -->
       <div class="qty-controls">
         <button class="btn-icon" onclick="alterarQty('${item.product_id}', ${item.qty_comprada}, -1)">−</button>
         <span>${item.qty_comprada}</span>
         <button class="btn-icon" onclick="alterarQty('${item.product_id}', ${item.qty_comprada}, +1)">+</button>
       </div>
+      <div class="price-input-wrapper">
+            <span class="price-prefix">R$</span>
+            <input type="number" class="price-input"
+                data-product-id="${item.product_id}"
+                value="${item.price > 0 ? item.price.toFixed(2): ''}"
+                placeholder="0,00"
+                step="0,01" min="0"
+                onchange="atualizarPreco(this)"
+                onclick="this.select()">
+        </div>
       <button class="btn-icon" onclick="mostrarEdicao(${item.id}, ${item.base_qty})" title="Editar quantidade base">✏️</button>
       <button class="btn-delete" onclick="deletarItemBase(${item.id})">🗑</button>
 
@@ -374,14 +421,16 @@ async function adicionarItemBase() {
 
 async function alterarQty (item, qtdAtual, delta) {
     const novaQty = Math.max(0, qtdAtual + delta);
+    const priceInput = document.querySelector(`.price-input[data-product-id="${item}"]`);
+    const preco = priceInput ? Number(priceInput.value) || 0 : 0;
     
     await fetch(`/api/shopping/monthly/${item}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ qty: novaQty })
+        body: JSON.stringify({ qty: novaQty, price: preco })
     });
-
-    carregarCompras();
+    await carregarCompras();
+    atualizarTotalCompras();
 }
 
 
@@ -573,5 +622,55 @@ async function carregarComparativo() {
 
     } catch (err) {
         console.error('Erro ao carregar comparativo:', err);
+    }
+}
+
+function abrirTrocarSenha () {
+    document.getElementById('modal-senha').style.display = 'flex';
+    document.getElementById('senha-atual').value = '';
+    document.getElementById('nova-senha').value = '';
+    document.getElementById('senha-confirma').value = '';
+    document.getElementById('senha-erro').textContent = '';
+    document.getElementById('senha-sucesso').textContent = '';
+}
+
+function fecharTrocarSenha() {
+    document.getElementById('modal-senha').style.display = 'none';
+}
+
+async function trocarSenha() {
+    const senhaAtual = document.getElementById('senha-atual').value;
+    const novaSenha = document.getElementById('nova-senha').value;
+    const confirma = document.getElementById('senha-confirma').value;
+    const erroDiv = document.getElementById('senha-erro');
+    const sucessoDiv = document.getElementById('senha-sucesso');
+
+    erroDiv.textContent = '';
+    sucessoDiv.textContent = '';
+
+    if (novaSenha !== confirma) {
+        erroDiv.textContent = 'As senhas não conferem';
+        return; 
+    }
+
+    try {
+        const res = await fetch('/auth/change-password', {
+            method: 'PUT',
+            headers:{ 'Content-Type': 'application/json' },
+            body: JSON.stringify({ senhaAtual, novaSenha })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            erroDiv.textContent = data.error;
+            return;
+        }
+
+        sucessoDiv.textContent = data.message;
+
+        setTimeout(() => fecharTrocarSenha(), 2000);
+    } catch(err) {
+        erroDiv.textContent = 'Erro de conexão';
     }
 }

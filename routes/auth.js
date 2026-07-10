@@ -54,4 +54,44 @@ router.post("/logout", (req , res) => {
     res.json({ message: "Logout realizado" });
 });
 
+router.put("/change-password", async (req, res) => {
+    const { senhaAtual, novaSenha } = req.body;
+    if (!senhaAtual || !novaSenha) {
+        return res.status(400).json({ error: "Preencha todos os campos" });
+    }
+    if (novaSenha.length < 6) {
+        return res.status(400).json({ error: "Nova senha deve ter no minimo 6 caracteres" });
+    }
+
+    try {
+        const token = req.cookies.token;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+        const result = await db.execute({
+            sql: "SELECT * FROM users WHERE id = ?",
+            args: [decoded.id]
+        });
+
+        const user = result.rows[0];
+        if (!user){
+            return res.status(404).json({ error: "Usuario não encontrado "});
+        }
+
+        const senhaCorreta = bcrypt.compareSync(senhaAtual, user.password);
+        if(!senhaCorreta) {
+            return res.status(401).json({ error: "Senha atual incorreta" });
+        }
+
+        const novoHash = bcrypt.hashSync(novaSenha, 10);
+        await db.execute({
+            sql: "UPDATE users SET password = ? WHERE id = ?",
+            args: [novoHash, decoded.id]
+        });
+
+        res.json({ message: "Senha alterada com sucesso!" });
+    } catch(err) {
+        console.error("Erro ao trocar senha:", err);
+        res.status(500).json({ error: "Erro ao trocar senha" });
+    }
+});
 module.exports = router;

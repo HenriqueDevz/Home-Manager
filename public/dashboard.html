@@ -22,6 +22,7 @@
         <div class = "header-right">
             <span class = "header-user" id="header-user"></span>
             <button class="btn-logout" id="btn-tema" onclick="toggleTema()">🌙</button>
+            <button class="btn-logout" onclick="abrirTrocarSenha()">🔐Senha</button>
             <button class = "btn-logout" onclick = "logout()">Sair</button>
         </div>
     </header>
@@ -258,6 +259,11 @@
             </select>
         </div>
 
+        <div class="metric-card full-width" style="margin-bottom: 0.75rem;">
+            <span class="metric-label">💰Total da lista</span>
+            <span class="metric-value green" id="comp-total">R$ 0,00</span>
+        </div>
+
             <div class="lista" id="comp-lista">
             </div>
         </section>
@@ -274,6 +280,33 @@
             <span>🛒</span>Compras
         </button>
     </nav>
+
+    <div class="modal-overlay" id="modal-senha" style="display: none;">
+        <div class="modal-box">
+            <h3 style="margin-bottom: 1rem;">🔐Trocar Senha</h3>
+
+            <div class="field">
+                <label>Senha Atual</label>
+                <input type="password" id="senha-atual" placeholder="Digite a senha atual">
+            </div>
+            
+            <div class="field">
+                <label>Nova Senha</label>
+                <input type="password" id="nova-senha" placeholder="Mínimo 6 caracteres">
+            </div>
+
+            <div class="field">
+                <label>Confirmar Nova Senha</label>
+                <input type="password" id="senha-confirma" placeholder="Repita a nova senha">
+            </div>
+
+            <div class="erro" id="senha-erro"></div>
+            <div class="sucesso" id="senha-sucesso"></div>
+
+            <button class="btn-primary" onclick="trocarSenha()">Salvar</button>
+            <button class="btn-secondary" onclick="fecharTrocarSenha()">Cancelar</button>
+        </div>
+    </div>
 
     <script src="/dashboard.js"></script>
     <script>
