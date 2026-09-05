@@ -51,7 +51,7 @@ router.get("/comparativo", async (req, res) => {
     const anoAnterior = mesAtual === 1 ? anoAtual - 1 : anoAtual;
 
     async function buscarTotais(month, year) {
-        const result = db.execute({
+        const result = await db.execute({
             sql:`
             SELECT type, SUM(value) as total 
             FROM finances
